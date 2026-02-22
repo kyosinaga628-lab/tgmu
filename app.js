@@ -136,4 +136,22 @@ function renderEventPage(data) {
     // Show content
     loadingEl.style.display = 'none';
     contentEl.style.display = 'block';
+
+    // Update Meta Tags for Rich Links (OGP/Twitter)
+    const pageUrl = window.location.href;
+    const absImage = event.image ? new URL(event.image, window.location.origin).href : 'https://explayground.com/assets/event_thumb.png';
+
+    const setMeta = (id, content) => {
+        const el = document.getElementById(id);
+        if (el) el.setAttribute('content', content);
+    };
+
+    setMeta('og-title', `${event.title} - TGμ`);
+    setMeta('og-description', event.description);
+    setMeta('og-url', pageUrl);
+    setMeta('og-image', absImage);
+
+    setMeta('twitter-title', `${event.title} - TGμ`);
+    setMeta('twitter-description', event.description);
+    setMeta('twitter-image', absImage);
 }

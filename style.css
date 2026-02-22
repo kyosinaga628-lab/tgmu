@@ -551,15 +551,24 @@ footer {
     .hero h1 {
         font-size: 3rem;
     }
+
+    .events-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 30px;
+    }
 }
 
 @media (max-width: 768px) {
     .hero h1 {
-        font-size: 2.2rem;
+        font-size: 2rem;
+    }
+
+    .hero p {
+        font-size: 1rem;
     }
 
     header {
-        padding: 15px 5%;
+        padding: 10px 5%;
     }
 
     nav ul {
@@ -567,6 +576,51 @@ footer {
     }
 
     .section {
-        padding: 80px 0;
+        padding: 60px 0;
+    }
+
+    .section-title {
+        font-size: 2rem;
+    }
+
+    .event-card {
+        border-radius: 8px;
+    }
+
+    .event-image-container {
+        height: 180px;
+    }
+
+    .button {
+        padding: 15px 30px;
+        font-size: 0.9rem;
+    }
+
+    .footer-content {
+        gap: 15px;
+        text-align: center;
+    }
+
+    .detail-title {
+        font-size: 1.8rem;
+    }
+
+    .detail-body {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero h1 {
+        font-size: 1.6rem;
+    }
+
+    .links-container .link-card {
+        padding: 15px;
+        font-size: 0.9rem;
+    }
+
+    .detail-title {
+        font-size: 1.5rem;
     }
 }
