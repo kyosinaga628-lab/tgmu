@@ -30,6 +30,7 @@ function renderEditor() {
         { key: 'siteConfig.subtitle', label: 'Subtitle', type: 'text', value: currentData.siteConfig.subtitle },
         { key: 'siteConfig.description', label: 'Description', type: 'textarea', value: currentData.siteConfig.description },
         { key: 'siteConfig.leaders', label: 'Leaders', type: 'text', value: currentData.siteConfig.leaders },
+        { key: 'siteConfig.contactEmail', label: 'Contact Email', type: 'text', value: currentData.siteConfig.contactEmail || '' },
     ]);
 
     // About
@@ -39,17 +40,43 @@ function renderEditor() {
 
     // Events
     const eventsDiv = document.createElement('div');
-    eventsDiv.innerHTML = '<h3>Events</h3>';
+    eventsDiv.innerHTML = '<h3>News / Events</h3>';
     currentData.events.forEach((event, index) => {
         const eventEl = document.createElement('div');
         eventEl.className = 'event-item';
-        eventEl.innerHTML = `<h4>Event ${index + 1}</h4>`;
+
+        const headerDiv = document.createElement('div');
+        headerDiv.style.display = 'flex';
+        headerDiv.style.justifyContent = 'space-between';
+        headerDiv.style.alignItems = 'center';
+        headerDiv.innerHTML = `<h4>Event ${index + 1}</h4>`;
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = 'Delete Event';
+        deleteBtn.style.background = '#dc3545';
+        deleteBtn.style.color = '#fff';
+        deleteBtn.style.width = 'auto';
+        deleteBtn.style.padding = '5px 10px';
+        deleteBtn.style.marginTop = '0';
+        deleteBtn.onclick = () => {
+            if (confirm('Are you sure you want to delete this event?')) {
+                currentData.events.splice(index, 1);
+                renderEditor();
+            }
+        };
+        headerDiv.appendChild(deleteBtn);
+        eventEl.appendChild(headerDiv);
 
         [
+            { k: 'id', l: 'Event ID (Unique, e.g. event-123)' },
             { k: 'title', l: 'Title' },
-            { k: 'date', l: 'Date' },
+            { k: 'date', l: 'Date (e.g. 2026-03-20)' },
+            { k: 'time', l: 'Time' },
+            { k: 'location', l: 'Location' },
+            { k: 'description', l: 'Short Description', t: 'textarea' },
+            { k: 'details', l: 'Main Details (Text)', t: 'textarea' },
             { k: 'link', l: 'External URL (Link)' },
-            { k: 'description', l: 'Description', t: 'textarea' }
+            { k: 'image', l: 'Image Path (e.g. assets/img.png)' }
         ].forEach(field => {
             const group = document.createElement('div');
             group.className = 'form-group';
@@ -58,11 +85,11 @@ function renderEditor() {
             let input;
             if (field.t === 'textarea') {
                 input = document.createElement('textarea');
-                input.value = event[field.k];
+                input.value = event[field.k] || '';
             } else {
                 input = document.createElement('input');
                 input.type = 'text';
-                input.value = event[field.k];
+                input.value = event[field.k] || '';
             }
 
             input.onchange = (e) => {
@@ -75,6 +102,26 @@ function renderEditor() {
 
         eventsDiv.appendChild(eventEl);
     });
+
+    const addEventBtn = document.createElement('button');
+    addEventBtn.textContent = '+ Add New Event';
+    addEventBtn.style.marginBottom = '30px';
+    addEventBtn.onclick = () => {
+        currentData.events.push({
+            id: 'event-' + Date.now(),
+            title: 'New Event',
+            date: '',
+            time: '',
+            location: '',
+            description: '',
+            details: '',
+            link: '',
+            image: ''
+        });
+        renderEditor();
+    };
+    eventsDiv.appendChild(addEventBtn);
+
     container.appendChild(eventsDiv);
 }
 

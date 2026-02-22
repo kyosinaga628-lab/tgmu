@@ -22,6 +22,11 @@ function renderSite(data) {
         if (heroTitle) heroTitle.textContent = data.siteConfig.title || "TGμ";
         if (heroSubtitle) heroSubtitle.textContent = data.siteConfig.subtitle || "";
 
+        const contactBtn = document.getElementById('contact-button');
+        if (contactBtn && data.siteConfig.contactEmail) {
+            contactBtn.href = `mailto:${data.siteConfig.contactEmail}`;
+        }
+
         // Could handle hero background here if we were using it
     }
 
