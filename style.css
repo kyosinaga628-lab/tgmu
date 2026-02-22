@@ -448,6 +448,40 @@ nav a:hover::after {
     color: #fff;
 }
 
+/* Links Section */
+.links-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.link-card {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    background: #fff;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--text-color);
+    font-weight: 700;
+    transition: all 0.3s ease;
+}
+
+.link-card::before {
+    content: "🔗";
+    margin-right: 15px;
+    font-size: 1.2rem;
+}
+
+.link-card:hover {
+    border-color: var(--accent-color);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    background: var(--secondary-bg);
+}
+
 /* Footer */
 footer {
     background-color: var(--text-color);

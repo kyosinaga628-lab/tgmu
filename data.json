@@ -19,7 +19,13 @@
     "news": {
       "title": "NEWS",
       "items": []
-    }
+    },
+    "links": [
+      {
+        "title": "Explayground Lab一覧",
+        "url": "https://explayground.com/lab"
+      }
+    ]
   },
   "events": [
     {

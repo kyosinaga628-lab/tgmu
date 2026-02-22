@@ -66,6 +66,21 @@ function renderSite(data) {
         if (leaders) leaders.textContent = data.siteConfig.leaders;
     }
 
+    // Links
+    const linksContainer = document.getElementById('links-container');
+    if (linksContainer && data.sections && data.sections.links) {
+        linksContainer.innerHTML = '';
+        data.sections.links.forEach(linkObj => {
+            const a = document.createElement('a');
+            a.className = 'link-card';
+            a.href = linkObj.url;
+            a.target = '_blank';
+            a.rel = 'noopener noreferrer';
+            a.textContent = linkObj.title;
+            linksContainer.appendChild(a);
+        });
+    }
+
     // Subpage Logic (event.html)
     if (window.location.pathname.includes('event.html')) {
         renderEventPage(data);

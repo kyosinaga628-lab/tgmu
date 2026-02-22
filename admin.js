@@ -123,6 +123,74 @@ function renderEditor() {
     eventsDiv.appendChild(addEventBtn);
 
     container.appendChild(eventsDiv);
+
+    // Links Section
+    const linksDiv = document.createElement('div');
+    linksDiv.innerHTML = '<h3>Links Section</h3>';
+    if (!currentData.sections) currentData.sections = {};
+    if (!currentData.sections.links) currentData.sections.links = [];
+
+    currentData.sections.links.forEach((linkObj, index) => {
+        const linkEl = document.createElement('div');
+        linkEl.className = 'event-item'; // Reusing event-item styling
+
+        const headerDiv = document.createElement('div');
+        headerDiv.style.display = 'flex';
+        headerDiv.style.justifyContent = 'space-between';
+        headerDiv.style.alignItems = 'center';
+        headerDiv.innerHTML = `<h4>Link ${index + 1}</h4>`;
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = 'Delete Link';
+        deleteBtn.style.background = '#dc3545';
+        deleteBtn.style.color = '#fff';
+        deleteBtn.style.width = 'auto';
+        deleteBtn.style.padding = '5px 10px';
+        deleteBtn.style.marginTop = '0';
+        deleteBtn.onclick = () => {
+            if (confirm('Are you sure you want to delete this link?')) {
+                currentData.sections.links.splice(index, 1);
+                renderEditor();
+            }
+        };
+        headerDiv.appendChild(deleteBtn);
+        linkEl.appendChild(headerDiv);
+
+        [
+            { k: 'title', l: 'Link Title (Display Text)' },
+            { k: 'url', l: 'URL (e.g. https://...)' }
+        ].forEach(field => {
+            const group = document.createElement('div');
+            group.className = 'form-group';
+            group.innerHTML = `<label>${field.l}</label>`;
+
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = linkObj[field.k] || '';
+            input.onchange = (e) => {
+                currentData.sections.links[index][field.k] = e.target.value;
+            };
+
+            group.appendChild(input);
+            linkEl.appendChild(group);
+        });
+
+        linksDiv.appendChild(linkEl);
+    });
+
+    const addLinkBtn = document.createElement('button');
+    addLinkBtn.textContent = '+ Add New Link';
+    addLinkBtn.style.marginBottom = '30px';
+    addLinkBtn.onclick = () => {
+        currentData.sections.links.push({
+            title: 'New Link',
+            url: ''
+        });
+        renderEditor();
+    };
+    linksDiv.appendChild(addLinkBtn);
+
+    container.appendChild(linksDiv);
 }
 
 function createSection(parent, title, fields) {
