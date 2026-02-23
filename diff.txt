@@ -1,0 +1,13 @@
+diff --git a/app.js b/app.js
+index b540958..b202fc6 100644
+--- a/app.js
++++ b/app.js
+@@ -63,7 +63,7 @@ function renderSite(data) {
+ 
+     const leaders = document.getElementById('about-leaders');
+     if (leaders && data.siteConfig && data.siteConfig.leaders) {
+-        leaders.textContent = data.siteConfig.leaders;
++        leaders.innerHTML = data.siteConfig.leaders;
+     }
+ 
+     // Activities
