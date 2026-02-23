@@ -41,9 +41,22 @@ function renderEditor() {
     // Activities
     const actsDiv = document.createElement('div');
     actsDiv.innerHTML = '<h3>Activities (活動実績)</h3>';
-    if (!currentData.activities) currentData.activities = { title: 'ACTIVITIES', items: [], media: [] };
+    if (!currentData.activities) currentData.activities = { title: 'ACTIVITIES', prVideoUrl: '', items: [], media: [] };
     if (!currentData.activities.items) currentData.activities.items = [];
     if (!currentData.activities.media) currentData.activities.media = [];
+
+    // PR Video URL
+    const videoGroup = document.createElement('div');
+    videoGroup.className = 'form-group';
+    videoGroup.innerHTML = '<label>Youtube PR Video Embed URL (e.g. https://www.youtube.com/embed/...)</label>';
+    const videoInput = document.createElement('input');
+    videoInput.type = 'text';
+    videoInput.value = currentData.activities.prVideoUrl || '';
+    videoInput.onchange = (e) => {
+        currentData.activities.prVideoUrl = e.target.value;
+    };
+    videoGroup.appendChild(videoInput);
+    actsDiv.appendChild(videoGroup);
 
     // Activities Items
     currentData.activities.items.forEach((act, index) => {
