@@ -7,16 +7,37 @@ async function loadData() {
     } catch (e) {
         alert('Failed to load data.json');
     }
+
+    // Pre-fill GitHub token if it exists in localStorage
+    const savedToken = localStorage.getItem('tgmu_github_token');
+    if (savedToken) {
+        const tokenInput = document.getElementById('github-token-input');
+        if (tokenInput) {
+            tokenInput.value = savedToken;
+        }
+    }
 }
 
 function login() {
     const input = document.getElementById('password-input').value;
+    const tokenInput = document.getElementById('github-token-input').value.trim();
+
     if (currentData && currentData.admin && input === currentData.admin.password) {
+        if (tokenInput) {
+            localStorage.setItem('tgmu_github_token', tokenInput);
+        }
         document.getElementById('login-screen').classList.add('hidden');
         document.getElementById('editor-screen').classList.remove('hidden');
         renderEditor();
     } else {
         alert('Incorrect password');
+    }
+}
+
+function logout() {
+    if (confirm('ログアウトし、保存されているGitHubトークンを削除しますか？')) {
+        localStorage.removeItem('tgmu_github_token');
+        location.reload();
     }
 }
 
@@ -398,7 +419,8 @@ async function saveData() {
 
     // Ensure the entered password is bound to the payload so the server can verify
     const passwordInput = document.getElementById('password-input').value;
-    const githubToken = document.getElementById('github-token-input').value;
+    // Prefer the saved token, fallback to whatever is in the input box
+    const githubToken = localStorage.getItem('tgmu_github_token') || document.getElementById('github-token-input').value.trim();
 
     if (!currentData.admin) {
         currentData.admin = {};
