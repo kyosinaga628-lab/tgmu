@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function fetchData() {
     try {
-        const response = await fetch('data.json');
+        const response = await fetch('data (4).json');
         const data = await response.json();
         renderSite(data);
     } catch (error) {
