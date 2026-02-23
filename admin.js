@@ -445,10 +445,10 @@ async function saveData() {
             };
 
             // 1. Get the current file SHA
-            const getStr = \`https://api.github.com/repos/\${repoDetails.owner}/\${repoDetails.repo}/contents/\${repoDetails.path}?ref=\${repoDetails.branch}\`;
+            const getStr = `https://api.github.com/repos/${repoDetails.owner}/${repoDetails.repo}/contents/${repoDetails.path}?ref=${repoDetails.branch}`;
             const getRes = await fetch(getStr, {
                 headers: {
-                    'Authorization': \`token \${githubToken}\`,
+                    'Authorization': `token ${githubToken}`,
                     'Accept': 'application/vnd.github.v3+json'
                 }
             });
@@ -467,7 +467,7 @@ async function saveData() {
             const putRes = await fetch(getStr, {
                 method: 'PUT',
                 headers: {
-                    'Authorization': \`token \${githubToken}\`,
+                    'Authorization': `token ${githubToken}`,
                     'Accept': 'application/vnd.github.v3+json',
                     'Content-Type': 'application/json'
                 },
