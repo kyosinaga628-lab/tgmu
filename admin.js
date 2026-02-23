@@ -396,18 +396,90 @@ async function saveData() {
     const messageEl = document.getElementById('message');
     messageEl.className = 'hidden';
 
-    try {
-        // Ensure the entered password is bound to the payload so the server can verify
-        const passwordInput = document.getElementById('password-input').value;
-        if (!currentData.admin) {
-            currentData.admin = {};
-        }
-        currentData.admin.password = passwordInput;
+    // Ensure the entered password is bound to the payload so the server can verify
+    const passwordInput = document.getElementById('password-input').value;
+    const githubToken = document.getElementById('github-token-input').value;
 
+    if (!currentData.admin) {
+        currentData.admin = {};
+    }
+    currentData.admin.password = passwordInput;
+
+    const jsonString = JSON.stringify(currentData, null, 2);
+
+    // If GitHub Token exists, try pushing directly
+    if (githubToken) {
+        try {
+            messageEl.textContent = 'Saving directly to GitHub...';
+            messageEl.classList.remove('hidden');
+            messageEl.classList.remove('error');
+            messageEl.classList.add('success');
+
+            const repoDetails = {
+                owner: 'kyosinaga628-lab',
+                repo: 'tgmu',
+                path: 'data.json',
+                branch: 'main'
+            };
+
+            // 1. Get the current file SHA
+            const getStr = \`https://api.github.com/repos/\${repoDetails.owner}/\${repoDetails.repo}/contents/\${repoDetails.path}?ref=\${repoDetails.branch}\`;
+            const getRes = await fetch(getStr, {
+                headers: {
+                    'Authorization': \`token \${githubToken}\`,
+                    'Accept': 'application/vnd.github.v3+json'
+                }
+            });
+
+            if (!getRes.ok) {
+                throw new Error('Failed to fetch current file SHA from GitHub.');
+            }
+            const getJson = await getRes.json();
+            const currentSha = getJson.sha;
+
+            // 2. Base64 encode the new JSON
+            // In browser, btoa() requires ASCII. To support Japanese characters:
+            const encodedContent = btoa(unescape(encodeURIComponent(jsonString)));
+
+            // 3. Update the file
+            const putRes = await fetch(getStr, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': \`token \${githubToken}\`,
+                    'Accept': 'application/vnd.github.v3+json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    message: 'Update data.json via Admin Panel',
+                    content: encodedContent,
+                    sha: currentSha,
+                    branch: repoDetails.branch
+                })
+            });
+
+            if (!putRes.ok) {
+                const errorData = await putRes.json();
+                throw new Error('GitHub API Error: ' + (errorData.message || putRes.statusText));
+            }
+
+            messageEl.textContent = 'Successfully saved to GitHub! Changes will be live shortly.';
+            messageEl.classList.remove('hidden');
+            messageEl.classList.add('success');
+            return;
+        } catch (githubError) {
+            console.error(githubError);
+            messageEl.textContent = 'GitHub Save Failed: ' + githubError.message + '. Falling back to local/download.';
+            messageEl.classList.remove('success');
+            messageEl.classList.add('error');
+            // Continue to fallback...
+        }
+    }
+
+    try {
         const response = await fetch('/api/save', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(currentData)
+            body: jsonString
         });
 
         const result = await response.json();
@@ -420,7 +492,7 @@ async function saveData() {
         console.error(e);
         // Fallback for static hosting: Download JSON
         downloadJSON(currentData);
-        messageEl.textContent = "Server not found. Downloaded data.json instead. Please upload manually.";
+        messageEl.textContent = "Server not found. Downloaded data.json instead. Please upload manually to GitHub.";
         messageEl.classList.remove('hidden');
         messageEl.classList.add('success');
     }
