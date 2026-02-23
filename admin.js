@@ -88,7 +88,8 @@ function renderEditor() {
         [
             { k: 'date', l: 'Date (e.g. 2023年4月22日)' },
             { k: 'title', l: 'Title' },
-            { k: 'content', l: 'Content', t: 'textarea' }
+            { k: 'content', l: 'Content', t: 'textarea' },
+            { k: 'link', l: 'Detail Link (Optional, URL)' }
         ].forEach(field => {
             const group = document.createElement('div');
             group.className = 'form-group';
