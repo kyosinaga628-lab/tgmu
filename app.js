@@ -142,14 +142,35 @@ function renderSite(data) {
     const linksContainer = document.getElementById('links-container');
     if (linksContainer && data.sections && data.sections.links) {
         linksContainer.innerHTML = '';
-        data.sections.links.forEach(linkObj => {
-            const a = document.createElement('a');
-            a.className = 'link-card';
-            a.href = linkObj.url;
-            a.target = '_blank';
-            a.rel = 'noopener noreferrer';
-            a.textContent = linkObj.title;
-            linksContainer.appendChild(a);
+        data.sections.links.forEach(categoryObj => {
+            const categoryDiv = document.createElement('div');
+            categoryDiv.className = 'link-category';
+            categoryDiv.style.marginBottom = '40px';
+
+            const categoryTitle = document.createElement('h3');
+            categoryTitle.className = 'category-title';
+            categoryTitle.textContent = categoryObj.category;
+            categoryTitle.style.fontSize = '1.3rem';
+            categoryTitle.style.marginBottom = '20px';
+            categoryTitle.style.borderBottom = '1px solid var(--border-color)';
+            categoryTitle.style.paddingBottom = '10px';
+            categoryDiv.appendChild(categoryTitle);
+
+            const gridDiv = document.createElement('div');
+            gridDiv.className = 'media-links-grid';
+
+            categoryObj.items.forEach(linkObj => {
+                const a = document.createElement('a');
+                a.className = 'link-card';
+                a.href = linkObj.url;
+                a.target = '_blank';
+                a.rel = 'noopener noreferrer';
+                a.textContent = linkObj.title;
+                gridDiv.appendChild(a);
+            });
+
+            categoryDiv.appendChild(gridDiv);
+            linksContainer.appendChild(categoryDiv);
         });
     }
 
