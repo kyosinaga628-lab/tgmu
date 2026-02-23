@@ -22,48 +22,73 @@
     },
     "links": [
       {
-        "title": "Explayground Lab一覧",
-        "url": "https://explayground.com/lab"
+        "category": "Explayground 関連",
+        "items": [
+          {
+            "title": "Explayground Lab一覧",
+            "url": "https://explayground.com/lab"
+          }
+        ]
       },
       {
-        "title": "JST 次世代人材育成事業 採択事例",
-        "url": "https://www.jst.go.jp/cpse/ssh/result/case/result.html"
+        "category": "連携・支援機関",
+        "items": [
+          {
+            "title": "JST 次世代人材育成事業",
+            "url": "https://www.jst.go.jp/cpse/ssh/result/case/result.html"
+          },
+          {
+            "title": "JAXA アジアントライゼロG 2023",
+            "url": "https://humans-in-space.jaxa.jp/biz-lab/news/detail/003266.html"
+          }
+        ]
       },
       {
-        "title": "JAXA アジアントライゼロG 2023 実験テーマ採択",
-        "url": "https://humans-in-space.jaxa.jp/biz-lab/news/detail/003266.html"
+        "category": "東京学芸大学附属高校 各種報告",
+        "items": [
+          {
+            "title": "文部科学大臣優秀教職員表彰受賞",
+            "url": "https://www.gakugei-hs.setagaya.tokyo.jp/report/11388/"
+          },
+          {
+            "title": "東京学芸大学附属高校 SSH活動 特別講座",
+            "url": "https://www.gakugei-hs.setagaya.tokyo.jp/ssh-activity/special21/"
+          },
+          {
+            "title": "産学連携活動 詳細資料 (PDF)",
+            "url": "ref/CV_20260223_0285-4309_52_05.pdf"
+          }
+        ]
       },
       {
-        "title": "文部科学大臣優秀教職員表彰受賞",
-        "url": "https://www.gakugei-hs.setagaya.tokyo.jp/report/11388/"
+        "category": "メディア掲載",
+        "items": [
+          {
+            "title": "テレ東プラス",
+            "url": "https://www.tv-tokyo.co.jp/plus/documentary/entry/202407/15374.html"
+          },
+          {
+            "title": "BSテレ東 THE名門校",
+            "url": "https://www.bs-tvtokyo.co.jp/meimonkou/backnumber/20240921/"
+          },
+          {
+            "title": "フォトロン SDGs事例",
+            "url": "https://www.photron.co.jp/lp/sdgs_school_lessons_01/"
+          }
+        ]
       },
       {
-        "title": "東京学芸大学附属高校 SSH活動 特別講座",
-        "url": "https://www.gakugei-hs.setagaya.tokyo.jp/ssh-activity/special21/"
-      },
-      {
-        "title": "テレ東プラス",
-        "url": "https://www.tv-tokyo.co.jp/plus/documentary/entry/202407/15374.html"
-      },
-      {
-        "title": "BSテレ東 THE名門校",
-        "url": "https://www.bs-tvtokyo.co.jp/meimonkou/backnumber/20240921/"
-      },
-      {
-        "title": "フォトロン SDGs事例",
-        "url": "https://www.photron.co.jp/lp/sdgs_school_lessons_01/"
-      },
-      {
-        "title": "産学連携活動 詳細資料 (PDF)",
-        "url": "ref/CV_20260223_0285-4309_52_05.pdf"
-      },
-      {
-        "title": "Peatix: 第０回JSEP（Japan Space Ed Port）",
-        "url": "https://peatix.com/event/4847878/view"
-      },
-      {
-        "title": "Peatix: 宇宙で動く！無重力からくり装置の想像と創造",
-        "url": "https://peatix.com/event/4326969/view"
+        "category": "イベントページ (Peatix)",
+        "items": [
+          {
+            "title": "第０回JSEP（Japan Space Ed Port）",
+            "url": "https://peatix.com/event/4847878/view"
+          },
+          {
+            "title": "宇宙で動く！無重力からくり装置の想像と創造",
+            "url": "https://peatix.com/event/4326969/view"
+          }
+        ]
       }
     ]
   },
