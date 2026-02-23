@@ -67,42 +67,49 @@ function renderSite(data) {
     }
 
     // Activities
-    const actContainer = document.getElementById('activities-container');
-    const mediaContainer = document.getElementById('media-container');
+    // Activities
+    const actContainer = document.getElementById('reports-container') || document.getElementById('activities-container');
+    const prContainer = document.getElementById('pr-video-container');
+    const mediaContainer = document.getElementById('media-links-container') || document.getElementById('media-container');
+
     if (data.activities) {
-        if (actContainer) {
-            actContainer.innerHTML = '';
 
-            // Render PR Video if available
-            if (data.activities.prVideoUrl) {
-                const videoDiv = document.createElement('div');
-                videoDiv.className = 'activity-video-container';
-                videoDiv.innerHTML = `
+        // Render PR Video if available
+        if (prContainer && data.activities.prVideoUrl) {
+            prContainer.innerHTML = `
+                <div class="activity-video-container">
                     <iframe src="${data.activities.prVideoUrl}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                `;
-                actContainer.appendChild(videoDiv);
-            }
+                </div>
+            `;
+        }
 
-            if (data.activities.items) {
-                data.activities.items.forEach(act => {
-                    const div = document.createElement('div');
-                    div.className = 'activity-item';
+        if (actContainer && data.activities.items) {
+            actContainer.innerHTML = '';
+            data.activities.items.forEach(act => {
+                const div = document.createElement('div');
+                div.className = 'activity-item';
 
-                    let linkHtml = '';
-                    if (act.link) {
-                        linkHtml = `<br><a href="${act.link}" class="read-more" target="_blank" rel="noopener noreferrer">詳細を見る</a>`;
-                    }
+                let linkHtml = '';
+                if (act.link) {
+                    linkHtml = `<div class="read-more-wrapper"><a href="${act.link}" class="read-more" target="_blank" rel="noopener noreferrer">詳細を見る</a></div>`;
+                }
 
-                    div.innerHTML = `
-                        <div class="activity-date">${act.date || ''}</div>
+                div.innerHTML = `
+                    <div class="activity-date">${act.date || ''}</div>
+                    <div class="activity-body">
                         <h3 class="activity-title">${act.title || ''}</h3>
                         <div class="activity-content">${(act.content || '').replace(/\n/g, '<br>')}</div>
                         ${linkHtml}
-                    `;
-                    actContainer.appendChild(div);
-                });
-            }
-            if (mediaContainer && data.activities.media) {
+                    </div>
+                `;
+                actContainer.appendChild(div);
+            });
+        }
+
+        if (mediaContainer && data.activities.media) {
+            mediaContainer.innerHTML = '';
+            // If the old id was used on index.html, format it nicely
+            if (mediaContainer.id === 'media-container') {
                 mediaContainer.innerHTML = '<h3 class="media-title">メディア掲載実績・連携</h3>';
                 const grid = document.createElement('div');
                 grid.className = 'media-links-grid';
@@ -116,6 +123,17 @@ function renderSite(data) {
                     grid.appendChild(a);
                 });
                 mediaContainer.appendChild(grid);
+            } else {
+                // For the new activities.html, just use the grid directly
+                data.activities.media.forEach(m => {
+                    const a = document.createElement('a');
+                    a.className = 'link-card';
+                    a.href = m.url;
+                    a.target = '_blank';
+                    a.rel = 'noopener noreferrer';
+                    a.textContent = m.title;
+                    mediaContainer.appendChild(a);
+                });
             }
         }
     }
