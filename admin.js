@@ -38,6 +38,152 @@ function renderEditor() {
         { key: 'sections.about.content', label: 'Content (HTML allowed)', type: 'textarea', value: currentData.sections.about.content }
     ]);
 
+    // Activities
+    const actsDiv = document.createElement('div');
+    actsDiv.innerHTML = '<h3>Activities (活動実績)</h3>';
+    if (!currentData.activities) currentData.activities = { title: 'ACTIVITIES', items: [], media: [] };
+    if (!currentData.activities.items) currentData.activities.items = [];
+    if (!currentData.activities.media) currentData.activities.media = [];
+
+    // Activities Items
+    currentData.activities.items.forEach((act, index) => {
+        const actEl = document.createElement('div');
+        actEl.className = 'event-item';
+
+        const headerDiv = document.createElement('div');
+        headerDiv.style.display = 'flex';
+        headerDiv.style.justifyContent = 'space-between';
+        headerDiv.style.alignItems = 'center';
+        headerDiv.innerHTML = `<h4>Activity Report ${index + 1}</h4>`;
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = 'Delete Report';
+        deleteBtn.style.background = '#dc3545';
+        deleteBtn.style.color = '#fff';
+        deleteBtn.style.width = 'auto';
+        deleteBtn.style.padding = '5px 10px';
+        deleteBtn.style.marginTop = '0';
+        deleteBtn.onclick = () => {
+            if (confirm('Are you sure you want to delete this report?')) {
+                currentData.activities.items.splice(index, 1);
+                renderEditor();
+            }
+        };
+        headerDiv.appendChild(deleteBtn);
+        actEl.appendChild(headerDiv);
+
+        [
+            { k: 'date', l: 'Date (e.g. 2023年4月22日)' },
+            { k: 'title', l: 'Title' },
+            { k: 'content', l: 'Content', t: 'textarea' }
+        ].forEach(field => {
+            const group = document.createElement('div');
+            group.className = 'form-group';
+            group.innerHTML = `<label>${field.l}</label>`;
+
+            let input;
+            if (field.t === 'textarea') {
+                input = document.createElement('textarea');
+                input.value = act[field.k] || '';
+            } else {
+                input = document.createElement('input');
+                input.type = 'text';
+                input.value = act[field.k] || '';
+            }
+
+            input.onchange = (e) => {
+                currentData.activities.items[index][field.k] = e.target.value;
+            };
+
+            group.appendChild(input);
+            actEl.appendChild(group);
+        });
+
+        actsDiv.appendChild(actEl);
+    });
+
+    const addActBtn = document.createElement('button');
+    addActBtn.textContent = '+ Add New Report';
+    addActBtn.style.marginBottom = '20px';
+    addActBtn.onclick = () => {
+        currentData.activities.items.push({
+            date: '',
+            title: 'New Report',
+            content: ''
+        });
+        renderEditor();
+    };
+    actsDiv.appendChild(addActBtn);
+
+    // Media Links
+    const mediaHeader = document.createElement('h4');
+    mediaHeader.textContent = 'Media / External Links';
+    mediaHeader.style.marginTop = '20px';
+    mediaHeader.style.marginBottom = '10px';
+    actsDiv.appendChild(mediaHeader);
+
+    currentData.activities.media.forEach((m, index) => {
+        const mEl = document.createElement('div');
+        mEl.className = 'event-item';
+
+        const headerDiv = document.createElement('div');
+        headerDiv.style.display = 'flex';
+        headerDiv.style.justifyContent = 'space-between';
+        headerDiv.style.alignItems = 'center';
+        headerDiv.innerHTML = `<h4>Media Link ${index + 1}</h4>`;
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = 'Delete Link';
+        deleteBtn.style.background = '#dc3545';
+        deleteBtn.style.color = '#fff';
+        deleteBtn.style.width = 'auto';
+        deleteBtn.style.padding = '5px 10px';
+        deleteBtn.style.marginTop = '0';
+        deleteBtn.onclick = () => {
+            if (confirm('Are you sure you want to delete this media link?')) {
+                currentData.activities.media.splice(index, 1);
+                renderEditor();
+            }
+        };
+        headerDiv.appendChild(deleteBtn);
+        mEl.appendChild(headerDiv);
+
+        [
+            { k: 'title', l: 'Title' },
+            { k: 'url', l: 'URL' }
+        ].forEach(field => {
+            const group = document.createElement('div');
+            group.className = 'form-group';
+            group.innerHTML = `<label>${field.l}</label>`;
+
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = m[field.k] || '';
+            input.onchange = (e) => {
+                currentData.activities.media[index][field.k] = e.target.value;
+            };
+
+            group.appendChild(input);
+            mEl.appendChild(group);
+        });
+
+        actsDiv.appendChild(mEl);
+    });
+
+    const addMediaBtn = document.createElement('button');
+    addMediaBtn.textContent = '+ Add New Media Link';
+    addMediaBtn.style.marginBottom = '30px';
+    addMediaBtn.onclick = () => {
+        currentData.activities.media.push({
+            title: 'New Media Link',
+            url: ''
+        });
+        renderEditor();
+    };
+    actsDiv.appendChild(addMediaBtn);
+
+    container.appendChild(actsDiv);
+
     // Events
     const eventsDiv = document.createElement('div');
     eventsDiv.innerHTML = '<h3>News / Events</h3>';

@@ -66,6 +66,40 @@ function renderSite(data) {
         if (leaders) leaders.textContent = data.siteConfig.leaders;
     }
 
+    // Activities
+    const actContainer = document.getElementById('activities-container');
+    const mediaContainer = document.getElementById('media-container');
+    if (data.activities) {
+        if (actContainer && data.activities.items) {
+            actContainer.innerHTML = '';
+            data.activities.items.forEach(act => {
+                const div = document.createElement('div');
+                div.className = 'activity-item';
+                div.innerHTML = `
+                    <div class="activity-date">${act.date || ''}</div>
+                    <h3 class="activity-title">${act.title || ''}</h3>
+                    <div class="activity-content">${(act.content || '').replace(/\n/g, '<br>')}</div>
+                `;
+                actContainer.appendChild(div);
+            });
+        }
+        if (mediaContainer && data.activities.media) {
+            mediaContainer.innerHTML = '<h3 class="media-title">メディア掲載実績・連携</h3>';
+            const grid = document.createElement('div');
+            grid.className = 'media-links-grid';
+            data.activities.media.forEach(m => {
+                const a = document.createElement('a');
+                a.className = 'link-card';
+                a.href = m.url;
+                a.target = '_blank';
+                a.rel = 'noopener noreferrer';
+                a.textContent = m.title;
+                grid.appendChild(a);
+            });
+            mediaContainer.appendChild(grid);
+        }
+    }
+
     // Links
     const linksContainer = document.getElementById('links-container');
     if (linksContainer && data.sections && data.sections.links) {

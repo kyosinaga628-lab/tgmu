@@ -364,6 +364,57 @@ nav a:hover::after {
     transform: translateX(5px);
 }
 
+/* Activities Section */
+.activity-item {
+    background: #fff;
+    border: 1px solid var(--border-color);
+    padding: 30px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+}
+
+.activity-date {
+    font-family: var(--font-display);
+    color: var(--accent-color);
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+}
+
+.activity-title {
+    font-size: 1.25rem;
+    font-weight: 900;
+    margin-bottom: 15px;
+    color: var(--text-color);
+}
+
+.activity-content {
+    font-size: 1rem;
+    color: var(--text-muted);
+    line-height: 1.8;
+}
+
+.media-container-wrapper {
+    margin-top: 60px;
+    padding-top: 40px;
+    border-top: 1px solid var(--border-color);
+}
+
+.media-title {
+    font-size: 1.5rem;
+    font-weight: 900;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.media-links-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 15px;
+}
+
 /* About Section */
 .about-grid {
     display: grid;
