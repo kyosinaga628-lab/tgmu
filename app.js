@@ -63,7 +63,7 @@ function renderSite(data) {
 
     const leaders = document.getElementById('about-leaders');
     if (leaders && data.siteConfig && data.siteConfig.leaders) {
-        leaders.textContent = data.siteConfig.leaders;
+        leaders.innerHTML = data.siteConfig.leaders;
     }
 
     // Activities
