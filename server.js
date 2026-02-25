@@ -1,9 +1,11 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 
 const PORT = process.env.PORT || 3001;
 const DATA_FILE = path.join(__dirname, 'data.json');
+const PROJECT_ROOT = path.resolve(__dirname);
 
 const mimeTypes = {
   '.html': 'text/html',
@@ -20,15 +22,25 @@ const server = http.createServer((req, res) => {
   console.log(`${req.method} ${req.url}`);
 
   if (req.method === 'GET') {
-    let filePath = '.' + req.url;
+    // Strip query string for file path resolution
+    const urlPath = req.url.split('?')[0];
+    let filePath = '.' + urlPath;
     if (filePath === './') {
       filePath = './index.html';
+    }
+
+    // Directory traversal protection
+    const resolvedPath = path.resolve(filePath);
+    if (!resolvedPath.startsWith(PROJECT_ROOT)) {
+      res.writeHead(403, { 'Content-Type': 'text/plain' });
+      res.end('Forbidden');
+      return;
     }
 
     const extname = String(path.extname(filePath)).toLowerCase();
     const contentType = mimeTypes[extname] || 'application/octet-stream';
 
-    fs.readFile(filePath, (error, content) => {
+    fs.readFile(resolvedPath, (error, content) => {
       if (error) {
         if (error.code === 'ENOENT') {
           fs.readFile('./404.html', (error, content) => {
@@ -70,10 +82,10 @@ const server = http.createServer((req, res) => {
             currentServerData = {};
           }
 
-          const serverPass = currentServerData.admin && currentServerData.admin.password ? currentServerData.admin.password : 'admin';
-          const clientPass = json.admin && json.admin.password ? json.admin.password : '';
+          const serverHash = currentServerData.admin && currentServerData.admin.passwordHash ? currentServerData.admin.passwordHash : '';
+          const clientHash = json.admin && json.admin.passwordHash ? json.admin.passwordHash : '';
 
-          if (serverPass !== clientPass) {
+          if (!serverHash || serverHash !== clientHash) {
             res.writeHead(403, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ success: false, message: 'Invalid Admin Password.' }));
             return;

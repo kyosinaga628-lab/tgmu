@@ -40,17 +40,45 @@ function renderSite(data) {
 
             const imageSrc = event.image || 'assets/event_thumb.png';
             const detailLink = event.link || '#';
-            card.innerHTML = `
-                <div class="event-image-container">
-                    <img src="${imageSrc}" alt="${event.title}" class="event-image">
-                </div>
-                <div class="event-content">
-                    <div class="event-date">${event.date}</div>
-                    <h3 class="event-title">${event.title}</h3>
-                    <p class="event-desc">${event.description}</p>
-                    <a href="${detailLink}" class="read-more" target="_blank" rel="noopener noreferrer">詳細を見る</a>
-                </div>
-            `;
+
+            // Build event card with safe DOM methods
+            const imgContainer = document.createElement('div');
+            imgContainer.className = 'event-image-container';
+            const img = document.createElement('img');
+            img.src = imageSrc;
+            img.alt = event.title;
+            img.className = 'event-image';
+            imgContainer.appendChild(img);
+
+            const content = document.createElement('div');
+            content.className = 'event-content';
+
+            const dateEl = document.createElement('div');
+            dateEl.className = 'event-date';
+            dateEl.textContent = event.date;
+
+            const titleEl = document.createElement('h3');
+            titleEl.className = 'event-title';
+            titleEl.textContent = event.title;
+
+            const descEl = document.createElement('p');
+            descEl.className = 'event-desc';
+            descEl.textContent = event.description;
+
+            const linkEl = document.createElement('a');
+            linkEl.className = 'read-more';
+            linkEl.href = detailLink;
+            linkEl.target = '_blank';
+            linkEl.rel = 'noopener noreferrer';
+            linkEl.textContent = '詳細を見る';
+
+            content.appendChild(dateEl);
+            content.appendChild(titleEl);
+            content.appendChild(descEl);
+            content.appendChild(linkEl);
+
+            card.appendChild(imgContainer);
+            card.appendChild(content);
             eventsContainer.appendChild(card);
         });
     }
