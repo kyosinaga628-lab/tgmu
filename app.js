@@ -275,4 +275,36 @@ function renderEventPage(data) {
     setMeta('twitter-title', `${event.title} - TGμ`);
     setMeta('twitter-description', event.description);
     setMeta('twitter-image', absImage);
+
+    // Update Canonical URL
+    const canonicalLink = document.getElementById('canonical-url');
+    if (canonicalLink) {
+        canonicalLink.setAttribute('href', pageUrl);
+    }
+
+    // Update JSON-LD SEO/GEO Schema
+    const jsonLdScript = document.getElementById('event-json-ld');
+    if (jsonLdScript) {
+        try {
+            const schema = JSON.parse(jsonLdScript.textContent);
+            schema.name = event.title;
+            schema.description = event.description;
+            schema.url = pageUrl;
+            schema.image = absImage;
+
+            if (event.date) {
+                schema.startDate = event.date;
+            }
+            if (event.location) {
+                schema.location = {
+                    "@type": "Place",
+                    "name": event.location,
+                    "address": event.location
+                };
+            }
+            jsonLdScript.textContent = JSON.stringify(schema, null, 2);
+        } catch (e) {
+            console.error("Error updating JSON-LD schema", e);
+        }
+    }
 }

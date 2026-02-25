@@ -90,12 +90,13 @@ nav a {
     letter-spacing: 1px;
     position: relative;
     color: var(--text-color);
+    padding: 10px 0; /* Improve touch target */
 }
 
 nav a::after {
     content: '';
     position: absolute;
-    bottom: -5px;
+    bottom: 5px; /* Adjusted to account for padding */
     left: 0;
     width: 0;
     height: 2px;
@@ -348,6 +349,7 @@ nav a:hover::after {
     display: inline-flex;
     align-items: center;
     font-weight: 900;
+    padding: 10px 0; /* Improve touch target size */
 }
 
 .read-more::after {
@@ -682,6 +684,10 @@ footer {
 }
 
 @media (max-width: 480px) {
+    .container {
+        padding: 0 20px;
+    }
+
     .hero h1 {
         font-size: 1.6rem;
     }
@@ -689,9 +695,27 @@ footer {
     .links-container .link-card {
         padding: 15px;
         font-size: 0.9rem;
+        /* Ensure touch target is at least 48px height */
+        min-height: 48px; 
     }
 
     .detail-title {
         font-size: 1.5rem;
+    }
+
+    /* Increase implicit touch targets on phones */
+    .read-more, .back-link, .admin-link, nav ul li a {
+        padding: 12px 5px;
+        display: inline-block;
+        min-height: 48px;
+    }
+
+    /* Optimize text layout for small screens */
+    .section {
+        padding: 50px 0;
+    }
+
+    .hero-text-wrapper {
+        padding: 0 10px;
     }
 }
