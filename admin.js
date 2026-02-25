@@ -18,19 +18,44 @@ async function loadData() {
     }
 }
 
-function login() {
+async function login() {
     const input = document.getElementById('password-input').value;
     const tokenInput = document.getElementById('github-token-input').value.trim();
 
     if (currentData && currentData.admin && input === currentData.admin.password) {
+        // Validate PAT if provided
         if (tokenInput) {
-            localStorage.setItem('tgmu_github_token', tokenInput);
+            try {
+                const testRes = await fetch('https://api.github.com/repos/kyosinaga628-lab/tgmu/contents/data.json?ref=main', {
+                    headers: {
+                        'Authorization': `token ${tokenInput}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+                if (!testRes.ok) {
+                    const status = testRes.status;
+                    if (status === 401) {
+                        alert('GitHub PATが無効または期限切れです。新しいトークンを生成してください。\n\nGitHub → Settings → Developer settings → Personal access tokens');
+                        return;
+                    } else if (status === 403) {
+                        alert('GitHub PATに必要な権限がありません。\n\nFine-grained tokenの場合:\n・Repository access → kyosinaga628-lab/tgmu を選択\n・Permissions → Contents: Read and write');
+                        return;
+                    } else if (status === 404) {
+                        alert('リポジトリにアクセスできません。PATの権限を確認してください。\n\nFine-grained tokenの場合:\n・Repository access → kyosinaga628-lab/tgmu を選択');
+                        return;
+                    }
+                }
+                localStorage.setItem('tgmu_github_token', tokenInput);
+            } catch (e) {
+                alert('ネットワークエラー: GitHubに接続できません。インターネット接続を確認してください。');
+                return;
+            }
         }
         document.getElementById('login-screen').classList.add('hidden');
         document.getElementById('editor-screen').classList.remove('hidden');
         renderEditor();
     } else {
-        alert('Incorrect password');
+        alert('パスワードが正しくありません');
     }
 }
 
@@ -429,12 +454,11 @@ async function saveData() {
 
     const jsonString = JSON.stringify(currentData, null, 2);
 
-    // If GitHub Token exists, try pushing directly
+    // If GitHub Token exists, try pushing directly (do NOT fall through to /api/save)
     if (githubToken) {
         try {
-            messageEl.textContent = 'Saving directly to GitHub...';
-            messageEl.classList.remove('hidden');
-            messageEl.classList.remove('error');
+            messageEl.textContent = 'GitHubに保存中...';
+            messageEl.classList.remove('hidden', 'error');
             messageEl.classList.add('success');
 
             const repoDetails = {
@@ -454,7 +478,18 @@ async function saveData() {
             });
 
             if (!getRes.ok) {
-                throw new Error('Failed to fetch current file SHA from GitHub.');
+                const status = getRes.status;
+                let detail = '';
+                try { detail = (await getRes.json()).message || ''; } catch (_) { }
+                if (status === 401) {
+                    throw new Error('認証エラー: トークンが無効または期限切れです。新しいPATを生成してください。');
+                } else if (status === 403) {
+                    throw new Error('権限エラー: トークンにリポジトリへの書き込み権限がありません。PATのスコープ(Contents: Read and write)を確認してください。' + (detail ? ' (' + detail + ')' : ''));
+                } else if (status === 404) {
+                    throw new Error('リポジトリまたはファイルが見つかりません。リポジトリ名・パスを確認してください。');
+                } else {
+                    throw new Error(`GitHub APIエラー (${status}): ${detail || getRes.statusText}`);
+                }
             }
             const getJson = await getRes.json();
             const currentSha = getJson.sha;
@@ -480,23 +515,33 @@ async function saveData() {
             });
 
             if (!putRes.ok) {
-                const errorData = await putRes.json();
-                throw new Error('GitHub API Error: ' + (errorData.message || putRes.statusText));
+                const putStatus = putRes.status;
+                let putDetail = '';
+                try { putDetail = (await putRes.json()).message || ''; } catch (_) { }
+                if (putStatus === 409) {
+                    throw new Error('競合エラー: 別の更新が先に行われました。ページをリロードして再度お試しください。');
+                } else if (putStatus === 422) {
+                    throw new Error('SHAの不一致: ページをリロードして再度お試しください。' + (putDetail ? ' (' + putDetail + ')' : ''));
+                } else {
+                    throw new Error(`GitHub API 書き込みエラー (${putStatus}): ${putDetail || putRes.statusText}`);
+                }
             }
 
-            messageEl.textContent = 'Successfully saved to GitHub! Changes will be live shortly.';
-            messageEl.classList.remove('hidden');
+            messageEl.textContent = '✅ GitHubに保存しました！変更は数分以内に反映されます。';
+            messageEl.classList.remove('hidden', 'error');
             messageEl.classList.add('success');
             return;
         } catch (githubError) {
-            console.error(githubError);
-            messageEl.textContent = 'GitHub Save Failed: ' + githubError.message + '. Falling back to local/download.';
-            messageEl.classList.remove('success');
+            console.error('GitHub Save Error:', githubError);
+            messageEl.textContent = '❌ GitHub保存失敗: ' + githubError.message;
+            messageEl.classList.remove('hidden', 'success');
             messageEl.classList.add('error');
-            // Continue to fallback...
+            // Do NOT fall through – the user intended to save via GitHub.
+            return;
         }
     }
 
+    // No GitHub token – try local server, then download fallback
     try {
         const response = await fetch('/api/save', {
             method: 'POST',
@@ -514,7 +559,7 @@ async function saveData() {
         console.error(e);
         // Fallback for static hosting: Download JSON
         downloadJSON(currentData);
-        messageEl.textContent = "Server not found. Downloaded data.json instead. Please upload manually to GitHub.";
+        messageEl.textContent = "ローカルサーバーが見つかりません。data.jsonをダウンロードしました。GitHubに手動でアップロードしてください。";
         messageEl.classList.remove('hidden');
         messageEl.classList.add('success');
     }
